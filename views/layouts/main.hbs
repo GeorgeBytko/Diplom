@@ -1,0 +1,33 @@
+{{> head}}
+
+<body>
+  {{> navbar}}
+  <button class="test-btn">TEST</button>
+  <button class="send-btn">SEND</button>
+  <textarea class="title"></textarea>
+  <textarea class="desc"></textarea>
+  <textarea class="price"></textarea>
+  <div class="container">
+    {{{ body }}}
+  </div>
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script>
+    $('.test-btn').click( function(){
+                $.get({
+                    url: 'https://habr.com/ru/rss/all/all/',
+                    success: function (data) {
+                        console.log(data);
+                    }
+                })
+    }
+
+    )
+
+
+
+
+
+</script>
+</body>
+
+</html>
