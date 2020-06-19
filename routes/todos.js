@@ -1,7 +1,5 @@
 const { Router } = require('express')
 const router = Router();
-const Todo = require('../models/Todo');
-const Roll = require('../models/Roll')
 const News = require('../models/News');
 const Lent = require('../models/Lent');
 const User = require('../models/User');
