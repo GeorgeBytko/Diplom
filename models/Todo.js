@@ -11,25 +11,4 @@ const schema = new Schema({
   }
 })
 
-
-const sc2 = new Schema({
-  price: {
-    type: Number,
-    required: true
-  },
-  img: {
-    type: String,
-    required: true
-  },
-  desc: {
-    type: String,
-    required: true
-  },
-  title: {
-    type: String,
-    required: true
-  }
-
-})
-
 module.exports = model('Todo', schema)

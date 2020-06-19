@@ -8,12 +8,24 @@ const user = new Schema({
         type: String,
         required: true
     },
-    feeds: {
-        type: [String],
+    lents: {
+        type: [Schema.Types.ObjectId],
         required: true
     },
-    lastFeedsUpdate: {
-        type: Date,
+    dates: {
+        type: Schema.Types.Mixed,
+        required: true
+    },
+    news_all: {
+        type: [Schema.Types.ObjectId],
+        required: true
+    },
+    news_saved: {
+        type: [Schema.Types.ObjectId],
+        required: true
+    },
+    news_unread: {
+        type: [Schema.Types.ObjectId],
         required: true
     }
 

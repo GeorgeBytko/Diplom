@@ -1,5 +1,5 @@
 const { Schema, model } = require('mongoose')
-const mainFeedList = new Schema({
+const lent = new Schema({
     title: {
         type: String,
         required: true
@@ -8,9 +8,12 @@ const mainFeedList = new Schema({
         type: String,
         required: true
     },
-    latestFeedDate: {
+    last_update: {
         type: Date,
         required: true
+    },
+    img: {
+        type: String
     }
 })
-module.exports = model('MainFeedList', mainFeedList)
+module.exports = model('Lent', lent)

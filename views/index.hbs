@@ -1,30 +1,28 @@
 <h2>Todos page</h2>
-<div>{{#each todos}}
-        {{todos}}
+<div class="news-list">
+    {{#each data}}
+        <div class="news-list__item" data-link="{{this.link}}" data-_id="{{this._id}}" data-parent_id="{{this.parent_lent_id}}">
+            <div class="news-list__item-heading">
+                <div class="news-list__item-title">
+                    {{this.title}}
+                </div>
+                <div class="news-list__item-mark {{#if this.saved}}news-list__item-mark_saved{{/if}}" data-_id="{{this._id}}">
+                </div>
+            </div>
+
+            <div class="news-list__item-parent-lent-title">
+                {{this.parent_lent_title}}
+            </div>
+            <div class="news-list__item-description">
+            {{this.desc}}
+            </div>
+            <div class="news-list__item-author">
+                Author: {{this.author}}
+            </div>
+            <div class="news-list__item-pub-date">
+                Date: {{this.pub_date}}
+            </div>
+        </div>
     {{/each}}
-{{todos}}</div>
-{{#if todos.length}}
-<ul>
-  {{#each todos}}
-  <li class="todo">
-    <form action="/complete" method="POST">
-      <label>
-        {{#if completed}}
-        <input type="checkbox" checked name="completed">
-        <span class="completed">{{title}}</span>
-        {{else}}
-        <input type="checkbox" name="completed">
-        <span>{{title}}</span>
-        {{/if}}
 
-        <input type="hidden" value="{{_id}}" name="id">
-
-        <button class="btn btn-small" type="submit">Save</button>
-      </label>
-    </form>
-  </li>
-  {{/each}}
-</ul>
-{{else}}
-<p>No todos!</p>
-{{/if}}
+</div>

@@ -1,0 +1,36 @@
+<div class="sidebar">
+    <div class="sidebar__item">
+        <div class="sidebar__item-title">
+            COMMON FEED
+        </div>
+        <div class="sidebar__item-option" data-option="all">
+            <a href="/news/all" class="sidebar__item-option-link {{#if isAll}}sidebar__item-option-link_selected{{/if}}">ALLD</a>
+        </div>
+    </div>
+    <div class="sidebar_item">
+        <div class="sidebar__item-title">
+            PERSONAL FEED
+        </div>
+        <div class="sidebar__item-option" data-option="person_unread">
+            <a href="/news/person_unread" class="sidebar__item-option-link {{#if isPersonUnread}}sidebar__item-option-link_selected{{/if}}">UNREAD {{unreadCount}}</a>
+        </div>
+        <div class="sidebar__item-option" data-option="person_unread">
+            <a href="/news/person_all" class="sidebar__item-option-link {{#if isPersonAll}}sidebar__item-option-link_selected{{/if}}">ALL</a>
+        </div>
+        <div class="sidebar__item-option" data-option="person_saved">
+            <a href="/news/person_saved" class="sidebar__item-option-link {{#if isPersonSaved}}sidebar__item-option-link_selected{{/if}}">SAVED</a>
+        </div>
+        <div class="sidebar__item-list">
+            <div class="sidebar__item-list-title">
+                PERSONAL FEED LIST
+            </div>
+            {{#each feeds}}
+                <div class="sidebar__item-list-item">
+                    <div class="sidebar__item-list-item-title">
+                        {{this.title}}
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+    </div>
+</div>

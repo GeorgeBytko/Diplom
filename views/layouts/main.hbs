@@ -1,78 +1,21 @@
 {{> head}}
 
 <body>
-  {{> navbar}}
-  <button class="test-btn">add feed lent</button>
-  <button class="send-btn">ADD USER</button>
-  <button class="addlent-btn">ADD LENT TO USER</button>
-  <button class="dellent-btn">Delete LENT TO USER</button>
-  <textarea class="title"></textarea>
-  <textarea class="desc"></textarea>
-  <textarea class="price"></textarea>
   <div class="container">
-    {{{ body }}}
+    {{> sidebar}}
+    <div class="container-content">
+        {{{ body }}}
+    </div>
   </div>
+  <div class="popup-window">
+  </div>
+
   <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-<script>
-    $('.test-btn').click( function(){
-                $.post({
-                    url: '/api/mainfeedlists',
-                    data: {
-                      link: $('.title').val()
-                    },
-                    success: function (data) {
-                        console.log(data);
-                    }
-                })
-    })
-    $('.send-btn').click( ()=>{
-        $.post({
-            url: '/api/users',
-            data: {
-                name: $('.title').val(),
-                password: $('.desc').val()
-            },
-            success: (data)=> {
-                console.log(data)
-            }
-        })
+  <script src="/indexScript.js"></script>
+  {{#if isDataChange}}
+      <script src="/dataBaseAdmin.js"></script>
+  {{/if}}
 
-    })
-
-    $('.addlent-btn').click( ()=> {
-        $.ajax({
-            url: '/api/users/feeds',
-            type: 'PUT',
-            data: {
-                name: $('.title').val(),
-                password: $('.desc').val(),
-                feed: $('.price').val()
-            },
-            success: (data) => {
-                console.log(data)
-            }
-        })
-    })
-
-    $('.dellent-btn').click( ()=> {
-        $.ajax({
-            url: '/api/users/feeds',
-            type: 'DELETE',
-            data: {
-                name: $('.title').val(),
-                password: $('.desc').val(),
-                feed: $('.price').val()
-            },
-            success: (data) => {
-                console.log(data)
-            }
-        })
-    })
-
-
-
-
-</script>
 </body>
 
 </html>

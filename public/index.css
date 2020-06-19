@@ -1,21 +1,208 @@
-.todo {
-  margin-bottom: 1rem;
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  font-family: Roboto, sans-serif;
 }
-
-.todo span.completed {
-  text-decoration: line-through;
+body {
+  background-color: #00bb77;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cpolygon fill='%23000' fill-opacity='.1' points='120 0 120 60 90 30 60 0 0 0 0 0 60 60 0 120 60 120 90 90 120 60 120 0'/%3E%3C/svg%3E");
 }
+.container {
 
-.todo label {
   width: 100%;
+  z-index: 1;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
+}
+.sidebar {
+  position: fixed;
+  width: 15%;
+  padding-top: 10%;
+  padding-left: 3%;
+  margin-right: 50px;
+  background: lightgray;
+  height: 100%;
+
+}
+.sidebar__item {
+  margin-bottom: 20px;
+}
+.sidebar__item-title {
+  font-size: 19px;
+}
+.sidebar__item-option {
+  font-size: 15px;
+  margin-bottom: 5px;
+  margin-left: 5px;
+}
+.sidebar__item-option_selected {
+  color: red;
+}
+.sidebar__item-option:hover{
   cursor: pointer;
-  background: #f3f3f3;
-  padding: 1rem;
+}
+.sidebar__item-list {
+  font-size: 15px;
+  margin-left: 5px;
+}
+.sidebar__item-list:hover {
+  cursor: pointer;
+}
+.news-list {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.news-list__item {
+  border: 1px solid black;
+  border-radius: 10px;
+  margin-bottom: 7px;
+  max-width: 50%;
+  overflow: hidden;
+  padding: 10px;
+
+}
+.news-list__item:hover{
+  cursor: pointer;
+}
+.news-list__item-heading{
+  display: flex;
+  justify-content: space-between;
 }
 
-.todo i {
-  z-index: 2;
+.news-list__item-title {
+  font-weight: bold;
+  font-size: 20px;
+  margin-bottom: 5px;
+  width: 85%;
+
 }
+.news-list__item-parent-lent-title{
+  margin-bottom: 7px;
+  overflow: hidden;
+  max-height: 18px;
+}
+.news-list__item-description {
+  max-height: 50px;
+  font-size: 22px;
+  overflow: hidden;
+  margin-bottom: 5px;
+}
+
+.news-list__item-mark {
+  width: 50px;
+  height: 50px;
+  background: url("star.svg") no-repeat;
+  background-size: cover;
+}
+
+.news-list__item-mark_saved {
+  width: 50px;
+  height: 50px;
+  background: url("star_active.svg");
+}
+.sidebar__item-option-link {
+  text-decoration: none;
+  color: white;
+}
+
+.sidebar__item-option-link_selected {
+  color: green;
+}
+.popup-window {
+  z-index: 3;
+  position: fixed;
+  display: none;
+}
+.popup-window__background {
+  z-index: 4;
+  position: fixed;
+  opacity: 50%;
+  width: 100%;
+  height: 100%;
+  background: #00bb77;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+}
+.popup-window__container{
+  z-index: 5;
+  overflow: auto;
+  top: 0;
+  padding: 10%;
+  left: 20%;
+  width: 60%;
+  height: 100%;
+  position: fixed;
+  background: white;
+}
+.popup-window__heading {
+  display: flex;
+  justify-content: space-between;
+}
+.popup-window__heading-title {
+  font-size: 32px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  width: 85%;
+}
+.popup-window__heading-mark {
+  width: 50px;
+  height: 50px;
+  background: url("star.svg") no-repeat;
+  background-size: cover;
+}
+
+.popup-window__heading-mark_saved {
+  width: 50px;
+  height: 50px;
+  background: url("star_active.svg");
+}
+.popup-window__info {
+  display: flex;
+  margin-bottom: 20px;
+  justify-content: space-between;
+}
+.popup-window__info-lent-title {
+  font-size: 13px;
+  width: 80%;
+}
+.popup-window__info-lent-btn-follow {
+  font-size: 16px;
+  width: 15%;
+  border: 1px solid black;
+  background-color: #00bb77;
+  text-align: center;
+  height: 40px;
+  padding-top: 12px;
+}
+.popup-window__additional-info-container {
+  display: flex;
+  margin-bottom: 20px;
+}
+.popup-window__additional-info-author {
+  font-size: 13px;
+}
+.popup-window__additional-info-pub-date {
+  font-size: 13px;
+  margin-right: 10px;
+
+}
+.popup-window__description {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+.popup-window__btn-container {
+  display: flex;
+  width: 50%;
+  justify-content: space-between;
+}
+.test {
+  position: fixed;
+  height: 500px;
+}
+

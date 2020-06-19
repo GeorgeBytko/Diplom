@@ -1,5 +1,5 @@
 const { Schema, model } = require('mongoose')
-const feed = new Schema({
+const news = new Schema({
     title: {
         type: String,
         required: true
@@ -12,7 +12,7 @@ const feed = new Schema({
         type: String,
         required: true
     },
-    pubDate: {
+    pub_date: {
         type: Date,
         required: true
     },
@@ -20,9 +20,13 @@ const feed = new Schema({
         type: String,
         required: true
     },
-    parentLink: {
+    parent_lent_title: {
         type: String,
+        required: true
+    },
+    parent_lent_id: {
+        type: Schema.Types.ObjectId,
         required: true
     }
 })
-module.exports = model('Feed', feed)
+module.exports = model('News', news)
