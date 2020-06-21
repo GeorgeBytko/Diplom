@@ -1,33 +1,35 @@
 <div class="sidebar">
     <div class="sidebar__item">
         <div class="sidebar__item-title">
-            COMMON FEED
+            ОБЩИЕ ЛЕНТЫ
         </div>
         <div class="sidebar__item-option" data-option="all">
-            <a href="/news/all" class="sidebar__item-option-link {{#if isAll}}sidebar__item-option-link_selected{{/if}}">ALLD</a>
+            <a href="/news/all" class="sidebar__item-option-link {{#if isAll}}sidebar__item-option-link_selected{{/if}}">Все новости</a>
         </div>
     </div>
     <div class="sidebar_item">
         <div class="sidebar__item-title">
-            PERSONAL FEED
+            ВАШИ ЛЕНТЫ
         </div>
         <div class="sidebar__item-option" data-option="person_unread">
-            <a href="/news/person_unread" class="sidebar__item-option-link {{#if isPersonUnread}}sidebar__item-option-link_selected{{/if}}">UNREAD {{unreadCount}}</a>
+            <a href="/news/person_unread" class="sidebar__item-option-link {{#if isPersonUnread}}sidebar__item-option-link_selected{{/if}}">Непрочитанные новости <span>{{unreadCount}}</span></a>
         </div>
         <div class="sidebar__item-option" data-option="person_unread">
-            <a href="/news/person_all" class="sidebar__item-option-link {{#if isPersonAll}}sidebar__item-option-link_selected{{/if}}">ALL</a>
+            <a href="/news/person_all" class="sidebar__item-option-link {{#if isPersonAll}}sidebar__item-option-link_selected{{/if}}">Все новости <span>{{allCount}}</span></a>
         </div>
         <div class="sidebar__item-option" data-option="person_saved">
-            <a href="/news/person_saved" class="sidebar__item-option-link {{#if isPersonSaved}}sidebar__item-option-link_selected{{/if}}">SAVED</a>
+            <a href="/news/person_saved" class="sidebar__item-option-link {{#if isPersonSaved}}sidebar__item-option-link_selected{{/if}}">Сохраненные новости</a>
         </div>
         <div class="sidebar__item-list">
             <div class="sidebar__item-list-title">
-                PERSONAL FEED LIST
+                Список ваших лент
             </div>
-            {{#each feeds}}
+            {{#each lents}}
                 <div class="sidebar__item-list-item">
                     <div class="sidebar__item-list-item-title">
                         {{this.title}}
+                    </div>
+                    <div class="sidebar__item-list-item-unfollow-btn" data-_id="{{this._id}}" data-title="Unfollow">
                     </div>
                 </div>
             {{/each}}

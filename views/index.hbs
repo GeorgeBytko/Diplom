@@ -1,7 +1,7 @@
-<h2>Todos page</h2>
+<h2>{{content_title}}</h2>
 <div class="news-list">
     {{#each data}}
-        <div class="news-list__item" data-link="{{this.link}}" data-_id="{{this._id}}" data-parent_id="{{this.parent_lent_id}}">
+        <div class="news-list__item {{#if this.read}}news-list__item_read{{/if}}" data-link="{{this.link}}" data-_id="{{this._id}}" data-parent_id="{{this.parent_lent_id}}" data-parent_saved="{{this.lentSaved}}">
             <div class="news-list__item-heading">
                 <div class="news-list__item-title">
                     {{this.title}}

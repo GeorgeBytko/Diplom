@@ -70,7 +70,7 @@ $(() =>{
             }
 
         })
-            .then(data => console.log(data))
+            .then(data => {console.log(data) })
     }
     $('.news-list__item-mark').click(function (event) {
         if (this.classList.contains('news-list__item-mark_saved')) {
@@ -85,25 +85,82 @@ $(() =>{
         event.stopPropagation()
     })
 
-    $('.news-list__item').click( function () {
-        let saved = ''
-        if (this.querySelector('.news-list__item-mark_saved')) {
-            saved = 'popup-window__heading-mark_saved'
+    $('.sidebar__item-list-item-unfollow-btn').click( function (event) {
+        console.log(event.target.dataset._id)
+        deleteLent(event.target.dataset._id, true)
+
+
+    })
+
+    function deleteLent(id, reload) {
+        $.ajax({
+            url:'/api/users/lents',
+            method: 'DELETE',
+            data: {
+                _id: id
+            }
+        }).then(()=>{
+            if (reload) {
+                location.reload()
+            }
+        })
+    }
+
+    function addLent(id) {
+        $.ajax({
+            url: '/api/users/lents',
+            method: 'PUT',
+            data: {
+                _id: id
+            }
+        })
+    }
+    function deleteUnreadNews(id) {
+        $.ajax({
+            method: 'DELETE',
+            url: '/api/users/news_unread',
+            data: {
+                _id : id,
+                option: 'single'
+            }
+        })
+    }
+
+    $('.news-list__item').click( function (e) {
+        const listItemMark = this.querySelector('.news-list__item-mark')
+        let followBtnFollowedClass = ''
+        let markSavedText = 'FOLLOW'
+        let followBtnClicked = false
+        if (Boolean(this.dataset.parent_saved)) {
+            followBtnFollowedClass = 'popup-window__info-lent-btn-follow_followed'
+            markSavedText = 'UNFOLLOW'
         }
-        $('.popup-window').append(`
+        let markSavedClass = ''
+
+        if (this.querySelector('.news-list__item-mark_saved')) {
+            markSavedClass = 'popup-window__heading-mark_saved'
+        }
+        if (!this.classList.contains('news-list__item_read')) {
+            this.classList.add('news-list__item_read')
+            deleteUnreadNews(this.dataset._id)
+        }
+
+        $('.popup-window').empty().append(`
             <div class="popup-window__background"></div>
+            
             <div class="popup-window__container">
+            <div class="popup-window__container-btn-close">CLOSE</div>
                 <div class="popup-window__heading">
                     <div class="popup-window__heading-title">
                         ${this.querySelector('.news-list__item-title').innerHTML}  
                     </div>
-                    <div class="popup-window__heading-mark ${saved}"></div>
+                    <div class="popup-window__heading-mark ${markSavedClass}" data-_id="${this.dataset._id}"></div>
                 </div>
                 <div class="popup-window__info">
               <div class="popup-window__info-lent-title">
                 ${this.querySelector('.news-list__item-parent-lent-title').innerHTML}
               </div>
-              <div class="popup-window__info-lent-btn-follow" data-_id="id">FOLLOW</div>
+              <div class="popup-window__info-lent-btn-follow ${followBtnFollowedClass}" data-_id="${this.dataset.parent_id}">${markSavedText}</div>
           </div>
                 <div class="popup-window__description">
                     ${this.querySelector('.news-list__item-description').innerHTML}
@@ -120,9 +177,12 @@ $(() =>{
       </div>
         `)
             .css('display', 'block')
-            .click( function () {
-                $(this).css('display','none')
-                $('body').css('overflow', 'auto')
+        $('.popup-window__background').click( function () {
+            $('.popup-window').css('display','none')
+            $('body').css('overflow', 'auto')
+            if (followBtnClicked) {
+                document.location.reload();
+            }
         })
         $('.popup-window__heading-mark').click((event) => {
             if (event.target.classList.contains('popup-window__heading-mark_saved')) {
@@ -132,11 +192,27 @@ $(() =>{
             else {
                 saveNews(event.target.dataset._id)
             }
-
+            listItemMark.classList.toggle('news-list__item-mark_saved')
             event.target.classList.toggle('popup-window__heading-mark_saved')
             event.stopPropagation()
         })
+        $('.popup-window__info-lent-btn-follow').click((event) => {
+            if (event.target.classList.contains('popup-window__info-lent-btn-follow_followed')) {
+                event.target.innerHTML = 'FOLLOW'
+                deleteLent(event.target.dataset._id)
+            }
+            else {
+                event.target.innerHTML = 'UNFOLLOW'
+                addLent(event.target.dataset._id)
+            }
+            event.target.classList.toggle('popup-window__info-lent-btn-follow_followed')
+            event.stopPropagation()
+            followBtnClicked = true
+
+            //
+
+        })
         $('body').css('overflow', 'hidden')
-        //$(this).toggleClass('test')
+
     })
 })

@@ -3,6 +3,7 @@ const router = Router();
 const News = require('../models/News');
 const Lent = require('../models/Lent');
 const User = require('../models/User');
+const {Types} = require('mongoose')
 let Parser = require('rss-parser');
 let parser = new Parser();
 router.get('/get-cookie', (req, res) => {
@@ -34,6 +35,7 @@ router.get('/news/:option', async (req, res) =>{
     console.log(req.params)
   if (req.params.option) {
       let user = await getUser()
+      const lents = await Lent.find({_id: {$in: user.lents}}).lean()
       switch (req.params.option) {
           case 'all':
               console.log('all')
@@ -42,11 +44,18 @@ router.get('/news/:option', async (req, res) =>{
                   if (user.news_saved.includes(item._id)) {
                       item.saved = true
                   }
+                  if (user.lents.includes(item.parent_lent_id)) {
+                      item.lentSaved = true
+                  }
               })
               res.render('index', {
                   data:data,
                   isAll : true,
-                  unreadCount: user.news_unread.length
+                  unreadCount: user.news_unread.length,
+                  lents: lents,
+                  savedCount: user.news_saved.length,
+                  allCount: user.news_all.length,
+                  content_title: 'Все новости'
               })
               break;
 
@@ -55,16 +64,21 @@ router.get('/news/:option', async (req, res) =>{
               console.log('person_new')
 
               await updatePersonNews(user)
-              const data = await News.find({_id: {$in: user.news_unread}}).sort({pub_date: 1}).lean()
+              const data = await News.find({_id: {$in: user.news_unread}}).sort({pub_date: -1}).lean()
               data.forEach(item => {
                   if (user.news_saved.includes(item._id)) {
                       item.saved = true
                   }
+                  item.lentSaved = true
               })
               res.render('index', {
                   data:data,
                   isPersonUnread: true,
-                  unreadCount: user.news_unread.length
+                  unreadCount: user.news_unread.length,
+                  lents: lents,
+                  savedCount: user.news_saved.length,
+                  allCount: user.news_all.length,
+                  content_title: 'Ваши непрочитанные новости'
               })
               break
           }
@@ -73,16 +87,24 @@ router.get('/news/:option', async (req, res) =>{
               console.log('person_all')
 
               await updatePersonNews(user)
-              const data = await News.find({_id: {$in: user.news_all}}).sort({pub_date: 1}).lean()
+              const data = await News.find({_id: {$in: user.news_all}}).sort({pub_date: -1}).lean()
               data.forEach(item => {
                   if (user.news_saved.includes(item._id)) {
                       item.saved = true
+                  }
+                  item.lentSaved = true
+                  if (!user.news_unread.includes(item._id)) {
+                      item.read = true
                   }
               })
               res.render('index', {
                   data:data,
                   isPersonAll: true,
-                  unreadCount: user.news_unread.length
+                  unreadCount: user.news_unread.length,
+                  lents: lents,
+                  savedCount: user.news_saved.length,
+                  allCount: user.news_all.length,
+                  content_title: 'Все ваши новости'
               })
               break
           }
@@ -91,16 +113,32 @@ router.get('/news/:option', async (req, res) =>{
 
               console.log('person_saved')
 
-              const data = await News.find({_id: {$in: user.news_saved}}).sort({pub_date: 1}).lean()
+              const unsortedData = await News.find({_id: {$in: user.news_saved}}).lean()
+              let data = []
+              user.news_saved.forEach((item) => {
+                  for (let i = 0; i < unsortedData.length; i++) {
+                      if (item.toString() === unsortedData[i]._id.toString()) {
+                          data.unshift(unsortedData[i])
+                          break
+                      }
+                  }
+              })
               data.forEach(item => {
                   if (user.news_saved.includes(item._id)) {
                       item.saved = true
+                  }
+                  if (user.lents.includes(item.parent_lent_id)) {
+                      item.lentSaved = true
                   }
               })
               res.render('index', {
                   data:data,
                   isPersonSaved: true,
-                  unreadCount: user.news_unread.length
+                  unreadCount: user.news_unread.length,
+                  lents: lents,
+                  savedCount: user.news_saved.length,
+                  allCount: user.news_all.length,
+                  content_title: 'Сохраненные новости'
               })
               break
           }
@@ -166,7 +204,7 @@ async function addLent(title, link) {
 }
 router.get('/api/testt', async (req,res) => {
     const user = await User.findOne({name: 'admin'})
-    user.dates.last_update = await new Date().toISOString()
+   const ss = await new Date().toISOString()
     await User.updateOne(user)
     res.send(user)
 })
@@ -201,14 +239,31 @@ router.put('/api/users/lents', async (req,res) => {
     console.log(req.body);
 
     const user = await getUser()
-    await parser.parseURL(req.body.link).then( async (feed)=> {
+    if (req.body.link) {
+        await parser.parseURL(req.body.link).then( async (feed)=> {
 
-        let lent = await Lent.findOne({title: feed.title})
-        if (!lent) {
-            lent = await addLent(feed.title, req.body.link)
-        }
-        if (!user.lents.includes(lent._id)) {
-            user.lents.push(lent._id)
+            let lent = await Lent.findOne({title: feed.title})
+            if (!lent) {
+                lent = await addLent(feed.title, req.body.link)
+            }
+            if (!user.lents.includes(lent._id)) {
+                user.lents.push(lent._id)
+                let date = new Date();
+                date.setDate(date.getDate() - 1)
+                user.dates.last_update = date.toISOString()
+                await User.updateOne(user)
+                await updatePersonNews(user)
+            }
+            res.send(user)
+
+        }).catch(err => {
+            console.log(err);
+            res.send('bad link')
+        })
+    }
+    else {
+        if (req.body._id){
+            user.lents.push(req.body._id)
             let date = new Date();
             date.setDate(date.getDate() - 1)
             user.dates.last_update = date.toISOString()
@@ -216,20 +271,24 @@ router.put('/api/users/lents', async (req,res) => {
             await updatePersonNews(user)
         }
         res.send(user)
-
-    }).catch(err => {
-        console.log(err);
-        res.send('bad link')
-    })
-
+    }
 });
 
 router.delete('/api/users/lents', async (req,res) => {
     if(!req.body) return res.sendStatus(400);
-    console.log(req.body);
     const lentToDelete = req.body._id;
     const user = await getUser()
-    user.feeds = user.feeds.filter( value => value !== lentToDelete);
+    user.lents = user.lents.filter( value => value.toString() !== lentToDelete);
+    const loginDate =new Date(user.dates.login_date)
+    loginDate.setDate(loginDate.getDate() - 1)
+    let newsToDelete = await News.find({parent_lent_id: lentToDelete, pub_date: {$gt: loginDate.toISOString()}}, {_id: 1})
+    let newsToDeleteAr = []
+    newsToDelete.forEach(item => {
+        newsToDeleteAr.push(item._id.toString())
+    })
+    user.news_all = user.news_all.filter(value => !newsToDeleteAr.includes(value.toString()))
+    console.log(user.news_all.length)
+    user.news_unread = user.news_unread.filter(value => !newsToDeleteAr.includes(value.toString()))
     await User.updateOne(user);
     res.send(user)
 });
@@ -241,9 +300,11 @@ async function getUser() {
 router.delete('/api/users/news_unread', async (req,res) => {
     switch (req.body.option) {
         case 'single': {
+
             let user = await getUser()
-            user.news_unread = user.news_unread.filter(item => item !== req.body._id)
+            user.news_unread = user.news_unread.filter(item => item.toString() !== req.body._id)
             await User.updateOne(user)
+            console.log(user.news_unread.length,user.news_unread[0])
             res.send(user)
             break
         }
@@ -273,7 +334,7 @@ router.delete('/api/users/news_saved', async (req,res) => {
     let user = await getUser()
     console.log(req.body._id)
     user.news_saved = user.news_saved.filter(item =>{
-        return item != req.body._id
+        return item.toString() !== req.body._id
     })
     console.log(user.news_saved)
     await User.updateOne(user)
