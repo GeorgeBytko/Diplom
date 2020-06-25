@@ -1,55 +1,4 @@
 $(() =>{
-    /*getContentAjax('all')
-    $('.sidebar__item-option').click( function() {
-        console.log(this.dataset.option)
-        $('.sidebar__item-option_selected').toggleClass('sidebar__item-option_selected')
-        $(this).toggleClass('sidebar__item-option_selected')
-        getContentAjax(this.dataset.option)
-    })
-
-    function getContentAjax(option) {
-        $.ajax({
-            url: '/api/news',
-            type: 'GET',
-            data: {
-                option: option
-            }
-        })
-            .done((data)=>{
-                console.log(data)
-                addContentToContainer(data)
-            })
-            .fail(()=>{console.log('fail')})
-    }
-
-    function addContentToContainer(data) {
-        let container = document.querySelector('.news-list')
-        container.innerHTML = ''
-        data.forEach((item) => {
-            container.insertAdjacentHTML('beforeend', `
-            <div class="news-list__item" data-link="${item.link}">
-                <div class="news-list__item-mark">
-                </div>
-                <div class="news-list__item-title">
-                    ${item.title}
-                </div>
-                <div class="news-list__item-description">
-                    ${item.desc}
-                </div>
-                <div class="news-list__item-author">
-                    Author: ${item.author}
-                </div>
-                <div class="news-list__item-pub-date">
-                    Date: ${item.pub_date}
-                </div>
-            </div>
-            `)
-        })
-        $('.news-list__item').click( function () {
-            console.log(this.dataset.link)
-            window.open(this.dataset.link, '_blank')
-        })
-    }*/
     function saveNews(id) {
         $.ajax({
             url: '/api/users/news_saved',
@@ -75,12 +24,10 @@ $(() =>{
     $('.news-list__item-mark').click(function (event) {
         if (this.classList.contains('news-list__item-mark_saved')) {
             deleteNews(this.dataset._id)
-
         }
         else {
             saveNews(this.dataset._id)
         }
-
         this.classList.toggle('news-list__item-mark_saved')
         event.stopPropagation()
     })
@@ -88,8 +35,6 @@ $(() =>{
     $('.sidebar__item-list-item-unfollow-btn').click( function (event) {
         console.log(event.target.dataset._id)
         deleteLent(event.target.dataset._id, true)
-
-
     })
 
     function deleteLent(id, reload) {
@@ -126,7 +71,7 @@ $(() =>{
         })
     }
 
-    $('.news-list__item').click( function (e) {
+    $('.news-list__item').click( function () {
         const listItemMark = this.querySelector('.news-list__item-mark')
         let followBtnFollowedClass = ''
         let markSavedText = 'FOLLOW'
@@ -145,7 +90,7 @@ $(() =>{
             deleteUnreadNews(this.dataset._id)
         }
 
-        $('.popup-window').empty().append(`
+        $('.popup-window').append(`
             <div class="popup-window__background"></div>
             
             <div class="popup-window__container">
@@ -177,8 +122,9 @@ $(() =>{
       </div>
         `)
             .css('display', 'block')
+
         $('.popup-window__background').click( function () {
-            $('.popup-window').css('display','none')
+            $('.popup-window').css('display','none').empty()
             $('body').css('overflow', 'auto')
             if (followBtnClicked) {
                 document.location.reload();
@@ -208,9 +154,6 @@ $(() =>{
             event.target.classList.toggle('popup-window__info-lent-btn-follow_followed')
             event.stopPropagation()
             followBtnClicked = true
-
-            //
-
         })
         $('body').css('overflow', 'hidden')
 
