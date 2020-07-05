@@ -2,7 +2,7 @@ const express = require('express')
 const mongoose = require('mongoose')
 const path = require('path')
 const exphbs = require('express-handlebars')
-const todoRoutes = require('./routes/todos')
+const todoRoutes = require('./routes/routes')
 let Parser = require('rss-parser');
 let parser = new Parser();
 const Lent = require('./models/Lent')
@@ -15,10 +15,10 @@ const hbs = exphbs.create({
   extname: 'hbs',
 
 })
+const UPDATE_FEEDS_TIMEOUT = 60*60*1000
 app.engine('hbs', hbs.engine)
 app.set('view engine', 'hbs')
 app.set('views', 'views')
-
 app.use(express.urlencoded({extended: true}))
 app.use(express.json())
 app.use(express.static(path.join(__dirname, 'public')))
@@ -35,13 +35,12 @@ async function updateFeeds() {
         if (news.items[0].isoDate > lent.last_update.toISOString() ) {
             news.items.forEach(item => {
                 if (item.isoDate > lent.last_update.toISOString()) {
-                    //console.log('\ntitle: '+ item.title + '\ndesc: ' + item.contentSnippet + '\nlink: ' + item.link +'\nauthor: '+ (item.creator || item.author || 'noone') + '\npubDate: ' + item.pubDate + '\nTAG: tech')
                     resArray.push({
-                        title: item.title || ' ',
-                        desc: item.contentSnippet || ' ',
+                        title: item.title || 'Unknown title',
+                        desc: item.contentSnippet || 'No content',
                         link: item.guid || item.link,
-                        pub_date: item.isoDate || ' ',
-                        author: item.creator || item.author || 'noone',
+                        pub_date: item.isoDate || 'Unknown date',
+                        author: item.creator || item.author || 'Unknown author',
                         parent_lent_title: lent.title,
                         parent_lent_id: lent._id
                     })
@@ -71,8 +70,9 @@ async function start() {
     )
     app.listen(PORT, () => {
       console.log('Server has been started...')
-    })
+    });
     await updateFeeds()
+    setInterval( updateFeeds, UPDATE_FEEDS_TIMEOUT)
   } catch (e) {
     console.log(e)
   }
