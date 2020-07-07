@@ -2,12 +2,14 @@ const express = require('express')
 const mongoose = require('mongoose')
 const path = require('path')
 const exphbs = require('express-handlebars')
-const todoRoutes = require('./routes/routes')
+const {router, passport} = require('./routes/routes')
 let Parser = require('rss-parser');
 let parser = new Parser();
 const Lent = require('./models/Lent')
 const News = require('./models/News')
 const cookieParser = require('cookie-parser')
+const session = require('express-session')
+
 const PORT = process.env.PORT || 3000
 const app = express()
 const hbs = exphbs.create({
@@ -15,6 +17,7 @@ const hbs = exphbs.create({
   extname: 'hbs',
 
 })
+
 const UPDATE_FEEDS_TIMEOUT = 60*60*1000
 app.engine('hbs', hbs.engine)
 app.set('view engine', 'hbs')
@@ -22,10 +25,19 @@ app.set('views', 'views')
 app.use(express.urlencoded({extended: true}))
 app.use(express.json())
 app.use(express.static(path.join(__dirname, 'public')))
-app.use(cookieParser('the key'))
-app.use(todoRoutes)
-
-
+app.use( session({
+    secret: 'thekey',
+    cookie: {
+        path: '/',
+        httpOnly: true,
+        maxAge: 60*60*1000
+    },
+    resave: false,
+    saveUninitialized: false
+}))
+app.use(passport.initialize())
+app.use(passport.session())
+app.use(router)
 async function updateFeeds() {
 
     const lents = await Lent.find({});

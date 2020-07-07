@@ -9,7 +9,7 @@ $(() =>{
             }
 
         })
-            .then(data => console.log(data))
+
     }
     function deleteNews(id) {
         $.ajax({
@@ -20,9 +20,8 @@ $(() =>{
             }
 
         })
-            .then(data => {console.log(data) })
+            .then(data => { })
             .catch(data => {
-                console.log(data)
             })
     }
     function deleteLent(id, reload) {
@@ -39,7 +38,6 @@ $(() =>{
                 }
             })
             .catch((e) => {
-                console.log(e)
             })
     }
     function addLent(id) {
@@ -77,7 +75,6 @@ $(() =>{
 
 
     $('.sidebar__item-list-item-unfollow-btn').click( function (event) {
-        console.log(event.target.dataset._id)
         deleteLent(event.target.dataset._id, true)
     })
 
@@ -144,7 +141,6 @@ $(() =>{
         `)
             .css('display', 'block')
             .on('click',(event) => {
-                console.log(event.target)
                 if (event.target.classList.contains('popup-window__info-lent-btn-follow')) {
                     if (event.target.classList.contains('popup-window__info-lent-btn-follow_followed')) {
                         event.target.textContent = 'FOLLOW'
@@ -221,20 +217,18 @@ $(() =>{
                 })
                 if (urlInput.value) {
                     addLentByUrl(urlInput.value)
-                        .then(() => {
-                            document.location.reload()
+                        .then((data) => {
+                            if (data) {
+                                urlInput.parentNode.classList.add('add-lent-form__rss-url-input-container__error')
+                                urlInput.parentNode.dataset.text = data
+                            }
+                            else {
+                                document.location.reload()
+                            }
                         })
                         .catch(e => {
-                            switch (e.status) {
-                                case 404:
-                                    urlInput.parentNode.classList.add('add-lent-form__rss-url-input-container__error')
-                                    urlInput.parentNode.dataset.text = 'Плохая ссылка'
-                                    break;
-                                case 409:
-                                    urlInput.parentNode.classList.add('add-lent-form__rss-url-input-container__error')
-                                    urlInput.parentNode.dataset.text = 'Данная лента уже добавлена'
-                                    break
-                            }
+                            urlInput.parentNode.classList.add('add-lent-form__rss-url-input-container__error')
+                            urlInput.parentNode.dataset.text = 'Плохая ссылка'
                         })
                 }
                 else {
@@ -242,6 +236,131 @@ $(() =>{
                     urlInput.parentNode.dataset.text = 'Введите ссылку'
                 }
 
+            })
+        $('body').css('overflow','hidden').append($popupWindow)
+    })
+
+    $('.sidebar__item-log').on('click', (event) => {
+        const $popupWindow = $('<div class="popup-window"></div>')
+        let $content;
+        switch (event.target.dataset.log) {
+
+            case 'in':{
+                $content = $(`
+                    <div class="popup-window__background"></div>
+                    <div class="popup-window__log-form-container">
+                        <form class="popup-window__log-form">
+                            <div class="popup-window__log-form-radio-container">
+                                <div class="popup-window__log-form-radio">
+                                    <label for="radio-login">Войти</label>
+                                    <input type="radio" name="log_radio" value="login" id="radio-login" checked>
+                                </div>
+                                <div class="popup-window__log-form-radio">
+                                    <label for="radio-reg">Зарегестрироваться</label>
+                                    <input type="radio" name="log_radio" value="reg" id="radio-reg">
+                                </div>
+                            </div>
+                            <div class="popup-window__log-form-input-container" data-err="">
+                                <label for="name">Логин</label>
+                                <input type="text" name="name">
+                                <label for="password">Пароль</label>
+                                <input type="password" name="password">
+                            </div>
+                            <div class="popup-window__log-btn-container"> 
+                                <button class="popup-window__log-btn-submit" type="submit">Подтвердить</button> 
+                                <button class="popup-window__log-btn-close" data-action="close" type="button">Отмена</button>
+                            </div>
+                        </form>
+                    </div>
+                `)
+                break
+            }
+            case 'out': {
+                $content = $(`
+                    <div class="popup-window__background"></div>
+                    <div class="popup-window__log-form-container">
+                        <form class="popup-window__log-form">
+                            <input type="radio" name="log_radio" value="logout" id="radio-login" checked hidden>
+                            <div class="popup-window__log-content">Вы уверены что хотите выйти?</div>
+                            <div class="popup-window__log-btn-container"> 
+                                <button class="popup-window__log-btn-submit" type="submit">Выйти</button>
+                                <button class="popup-window__log-btn-close" type="button">Отмена</button>
+                            </div>
+                        </form>
+                    </div>
+                `)
+                break
+            }
+
+        }
+        $popupWindow.append($content)
+            .css('display','block')
+            .on('submit', ev => {
+                ev.preventDefault()
+                const target = ev.target;
+                switch(target.elements.log_radio.value) {
+                    case 'login': {
+                        $.ajax({
+                            method: 'POST',
+                            url: '/login',
+                            data: {
+                                username: target.elements.name.value,
+                                password: target.elements.password.value
+                            }
+                        })
+                            .done(() => {
+                                document.location.reload()
+                            })
+                            .fail(e => {
+                                document.querySelector('.popup-window__log-form-input-container').dataset.err = 'Неверный логин или пароль'
+                                document.querySelector('.popup-window__log-form-input-container').classList.add('popup-window__log-form-input-container_error')
+                            })
+                        break
+                    }
+                    case 'reg': {
+                        $.ajax({
+                            method: "POST",
+                            url: '/api/users',
+                            data: {
+                                username: target.elements.name.value,
+                                password: target.elements.password.value
+                            }
+                        })
+                            .done(() => {
+                                document.location.reload()
+                            })
+                            .fail((e) => {
+                                switch (e.status) {
+                                    case 409:
+                                        document.querySelector('.popup-window__log-form-input-container').dataset.err = 'Данный логин уже занят'
+                                        break
+                                    default:
+                                        document.querySelector('.popup-window__log-form-input-container').dataset.err = 'Ошибка сервера'
+                                }
+
+                                document.querySelector('.popup-window__log-form-input-container').classList.add('popup-window__log-form-input-container_error')
+                            })
+                        break
+                    }
+                    default : {
+                        $.ajax({
+                            method: 'POST',
+                            url: '/logout'
+                        })
+                            .done(() => {
+                                document.location.reload()
+                            })
+                    }
+                }
+            })
+            .on('click', ev => {
+                if (ev.target.classList.contains('popup-window__log-btn-close') || ev.target.classList.contains('popup-window__log-form-container')) {
+                    $popupWindow.remove()
+                    return
+                }
+                if (ev.target.tagName === 'INPUT') {
+                    document.querySelector('.popup-window__log-form-input-container').classList.remove('popup-window__log-form-input-container_error')
+                }
             })
         $('body').css('overflow','hidden').append($popupWindow)
     })

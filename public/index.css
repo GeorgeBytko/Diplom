@@ -19,11 +19,12 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
 }
 .sidebar {
   position: fixed;
   width: 20%;
-  padding-top: 10%;
+  padding-top: 5%;
   padding-left: 3%;
   padding-right: 3%;
   background: lightgray;
@@ -81,6 +82,7 @@ body {
   background-size: cover;
   margin-left: 10px;
 }
+
 .sidebar__item-list-item-unfollow-btn:hover::before {
   position: relative;
   top: -20px;
@@ -95,7 +97,35 @@ body {
   cursor: pointer;
   transform: scale(1.1);
 }
+.sidebar__item-log {
+  width: 50px;
+  height: 50px;
+  background: url("login.svg") no-repeat;
+  background-size: cover;
+  transition: all ease-in 0.2s;
+}
+.sidebar__item-log:hover {
+  transform: scale(1.03);
+}
+.sidebar__item-log.sidebar__item-log_out {
+  background: url("logout.svg") no-repeat;
+  background-size: cover;
+}
+.sidebar__item-log::after {
+  opacity: 0;
+  content: attr(data-text);
+  transition: all ease-in 0.2s;
+  position: relative;
+  font-size: 10px;
+  top: -40px;
+}
+.sidebar__item-log:hover {
+  cursor: pointer;
+}
+.sidebar__item-log:hover::after {
+  opacity: 1;
 
+}
 .news-list {
   padding: 10px;
   display: flex;
@@ -337,4 +367,51 @@ body {
 .add-lent-form__btn-close {
   background-color: #e64848;
   color: white;
+}
+.popup-window__log-form-container {
+  position: fixed;
+  z-index: 7;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+.popup-window__log-form {
+  margin: 10% auto;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  background: white;
+  padding: 20px;
+  border-radius: 5px;
+
+}
+.popup-window__log-form-radio-container {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+.popup-window__log-form-input-container {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+  position: relative;
+}
+.popup-window__log-form-input-container input {
+  border: 1px solid black;
+  outline: none;
+  border-radius: 5px;
+}
+.popup-window__log-form-input-container.popup-window__log-form-input-container_error::before {
+  content: attr(data-err);
+  position: absolute;
+  left: -120px;
+  top: 25px;
+  border-radius: 5px;
+  background-color: #e64848;
+  max-width: 90px;
+  padding: 10px;
+}
+.popup-window__log-form-input-container.popup-window__log-form-input-container_error input {
+  border-color: #e64848;
 }

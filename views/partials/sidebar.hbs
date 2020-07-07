@@ -1,41 +1,61 @@
 <div class="sidebar">
-    <div class="sidebar__item">
-        <div class="sidebar__item-title">
-            ОБЩИЕ ЛЕНТЫ
-        </div>
-        <div class="sidebar__item-option" data-option="all">
-            <a href="/news/all" class="sidebar__item-option-link {{#if isAll}}sidebar__item-option-link_selected{{/if}}">Все новости</a>
-        </div>
-    </div>
-    <div class="sidebar_item">
-        <div class="sidebar__item-title">
-            ВАШИ ЛЕНТЫ
-        </div>
-        <div class="sidebar__item-option" data-option="person_unread">
-            <a href="/news/person_unread" class="sidebar__item-option-link {{#if isPersonUnread}}sidebar__item-option-link_selected{{/if}}">Непрочитанные новости <span>{{unreadCount}}</span></a>
-        </div>
-        <div class="sidebar__item-option" data-option="person_unread">
-            <a href="/news/person_all" class="sidebar__item-option-link {{#if isPersonAll}}sidebar__item-option-link_selected{{/if}}">Все новости <span>{{allCount}}</span></a>
-        </div>
-        <div class="sidebar__item-option" data-option="person_saved">
-            <a href="/news/person_saved" class="sidebar__item-option-link {{#if isPersonSaved}}sidebar__item-option-link_selected{{/if}}">Сохраненные новости</a>
-        </div>
-        <div class="sidebar__item-list">
-            <div class="sidebar__item-list-title">
-                Список ваших лент
+
+    {{#if noAuth}}
+
+        <div class="sidebar__item">
+            <div class="sidebar__item-log" data-log="in" data-text="Войти/Зарегестрироваться">
+
             </div>
-            {{#each lents}}
-                <div class="sidebar__item-list-item">
-                    <div class="sidebar__item-list-item-title">
-                        {{this.title}}
-                    </div>
-                    <div class="sidebar__item-list-item-unfollow-btn" data-_id="{{this._id}}" data-title="Unfollow">
-                    </div>
+        </div>
+        <div class="sidebar__item">
+            Зарегестрируйтесь или войдите
+
+            </div>
+        </div>
+    {{else}}
+        <div class="sidebar__item">
+            <div class="sidebar__item-log sidebar__item-log_out" data-log="out" data-text="Выйти">
+
+            </div>
+        </div>
+        <div class="sidebar__item">
+            <div class="sidebar__item-title">
+                ОБЩИЕ ЛЕНТЫ
+            </div>
+            <div class="sidebar__item-option" data-option="all">
+                <a href="/news/all" class="sidebar__item-option-link {{#if isAll}}sidebar__item-option-link_selected{{/if}}">Все новости</a>
+            </div>
+        </div>
+        <div class="sidebar_item">
+            <div class="sidebar__item-title">
+                ВАШИ ЛЕНТЫ
+            </div>
+            <div class="sidebar__item-option" data-option="person_unread">
+                <a href="/news/person_unread" class="sidebar__item-option-link {{#if isPersonUnread}}sidebar__item-option-link_selected{{/if}}">Непрочитанные новости <span>{{unreadCount}}</span></a>
+            </div>
+            <div class="sidebar__item-option" data-option="person_unread">
+                <a href="/news/person_all" class="sidebar__item-option-link {{#if isPersonAll}}sidebar__item-option-link_selected{{/if}}">Все новости <span>{{allCount}}</span></a>
+            </div>
+            <div class="sidebar__item-option" data-option="person_saved">
+                <a href="/news/person_saved" class="sidebar__item-option-link {{#if isPersonSaved}}sidebar__item-option-link_selected{{/if}}">Сохраненные новости</a>
+            </div>
+            <div class="sidebar__item-list">
+                <div class="sidebar__item-list-title">
+                    Список ваших лент
                 </div>
-            {{/each}}
-            <div class="sidebar__item-list-btn-add">
-                Добавить ленту
+                {{#each lents}}
+                    <div class="sidebar__item-list-item">
+                        <div class="sidebar__item-list-item-title">
+                            {{this.title}}
+                        </div>
+                        <div class="sidebar__item-list-item-unfollow-btn" data-_id="{{this._id}}" data-title="Unfollow">
+                        </div>
+                    </div>
+                {{/each}}
+                <div class="sidebar__item-list-btn-add">
+                    Добавить ленту
+                </div>
             </div>
         </div>
-    </div>
+    {{/if}}
 </div>
