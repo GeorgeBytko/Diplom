@@ -15,6 +15,8 @@
   4. rss-parser
   5. MongoDB
   6. Mongoose
+  7. passport.js
+  8. passport-local
 
 Клиент:
   1. JQuery
